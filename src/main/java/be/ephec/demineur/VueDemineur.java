@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  * ne compte aucune mine, ne decide d'aucune victoire : elle traduit un
  * clic en appel au modele, puis redessine.
  *
- * C'est le meme partage qu'en FX.8, et pour la meme raison : le modele
+ * C'est le meme partage qu'en FX.9, la calculatrice, et pour la meme raison : le modele
  * reste testable, la vue reste jetable.
  */
 public class VueDemineur {

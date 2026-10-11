@@ -1,6 +1,36 @@
 # Démineur
 
-Une application JavaFX autonome, en trois classes.
+Le projet de travail du professeur, organisé comme GameHub : `src/` contient
+le **corrigé**, et le projet que reçoit l'étudiant en est dérivé.
+
+## Ce qu'on y trouve
+
+| Dossier | Contenu |
+|---|---|
+| `src/` | le corrigé ; les méthodes que l'étudiant écrit sont précédées d'un marqueur `//@ecrire D.n` |
+| `_outils/` | le générateur de l'énoncé, celui du projet étudiant, et leurs utilitaires |
+| `_documents/` | `Demineur_enonce.docx`, l'énoncé en sept étapes |
+| `depot/` | le projet étudiant généré, et son zip ; ignoré par Git |
+
+## Pour régénérer
+
+```
+node _outils/build_demineur.js                  l'énoncé
+python3 _outils/ajouter_pagination.py _documents/Demineur_enonce.docx "Demineur" <pages>
+python3 _outils/typographie.py _documents/Demineur_enonce.docx
+python3 _outils/depot_demineur.py --verifier    contrôle le squelette
+python3 _outils/depot_demineur.py               fabrique depot/Demineur/ et depot/Demineur.zip
+```
+
+Le projet étudiant reçoit `Grille` avec le corps des méthodes marquées
+remplacé par une exception qui nomme l'étape, et tout le reste tel quel : la
+vue, l'application, le lanceur, les onze tests et l'énoncé. Les étapes de
+l'énoncé et les marqueurs du code doivent rester d'accord : si l'un change,
+l'autre suit.
+
+## L'application
+
+Une application JavaFX autonome, en quatre classes.
 
 | Classe | Rôle |
 |---|---|
@@ -111,7 +141,9 @@ pourquoi ce projet existe séparément.
 
 ## Ce qui reste testable
 
-`Grille` ne contient aucun import JavaFX, et `GrilleTest` la couvre
-entièrement : le comptage des mines voisines, la propagation des cases vides,
-les drapeaux, la victoire. C'est le bénéfice de la séparation modèle / vue,
-et il se vérifie en lançant les tests.
+`Grille` ne contient aucun import JavaFX, et `GrilleTest` en vérifie toutes
+les règles du jeu : le comptage des mines voisines, la propagation des cases
+vides, les drapeaux, la victoire, et le refus d'une grille impossible. C'est
+le bénéfice de la séparation modèle / vue, et il se vérifie en lançant les
+tests. Seul le placement des mines au hasard échappe aux tests : le `Random`
+est créé dans `Grille`, et son résultat ne se prédit pas.

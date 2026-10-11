@@ -3,7 +3,11 @@ package be.ephec.demineur;
 import java.util.Random;
 
 /**
- * Le MODELE du demineur, le MODELE.
+ * Le MODELE du demineur. CORRIGE.
+ *
+ * Les methodes precedees d'un marqueur //@ecrire sont celles que
+ * l'etudiant ecrit : _outils/depot_demineur.py remplace leur corps par une
+ * exception dans le projet qu'il recoit. Tout le reste lui est fourni.
  *
  * Aucun import JavaFX. C'est la regle de l'exercice, et c'est ce qui rend
  * cette classe entierement testable en JUnit : placer des mines a des
@@ -36,9 +40,22 @@ public class Grille {
     private boolean perdue = false;
     private int casesSaines;
 
-    /** Constructeur de jeu : les mines sont placees au hasard. */
+    /**
+     * Constructeur de jeu : les mines sont placees au hasard.
+     *
+     * Il reste au moins une case saine, sans quoi la partie serait perdue
+     * avant le premier clic. Le controle n'est pas une precaution de
+     * principe : sans lui, placerAuHasard chercherait indefiniment une
+     * case libre qui n'existe pas, et le programme se figerait sans un
+     * message. Voir CC-ERR.1.
+     */
     public Grille(int lignes, int colonnes, int nombreDeMines) {
         this(lignes, colonnes);
+        if (nombreDeMines < 0 || nombreDeMines >= lignes * colonnes) {
+            throw new IllegalArgumentException("Entre 0 et " + (lignes * colonnes - 1)
+                    + " mines sur une grille de " + lignes + " x " + colonnes
+                    + ", pas " + nombreDeMines);
+        }
         placerAuHasard(nombreDeMines, new Random());
     }
 
@@ -49,6 +66,11 @@ public class Grille {
      * parametre ailleurs dans le cours.
      */
     public Grille(int lignes, int colonnes) {
+        if (lignes < 1 || colonnes < 1) {
+            throw new IllegalArgumentException(
+                    "Une grille compte au moins une ligne et une colonne, pas "
+                    + lignes + " x " + colonnes);
+        }
         this.lignes = lignes;
         this.colonnes = colonnes;
         this.mines = new boolean[lignes][colonnes];
@@ -98,6 +120,7 @@ public class Grille {
     }
 
     /** Le nombre de mines dans les huit cases voisines. */
+    //@ecrire D.2
     public int minesVoisines(int ligne, int colonne) {
         int compte = 0;
         for (int dl = -1; dl <= 1; dl++) {
@@ -127,6 +150,7 @@ public class Grille {
      * La recursion s'arrete d'elle-meme : une case deja decouverte est
      * ignoree, et le nombre de cases est fini.
      */
+    //@ecrire D.3 et D.4
     public void decouvrir(int ligne, int colonne) {
         if (!dansLaGrille(ligne, colonne) || perdue) {
             return;
@@ -166,6 +190,7 @@ public class Grille {
      *
      * Une case decouverte ne bouge plus : il n'y a plus rien a marquer.
      */
+    //@ecrire D.5
     public void basculerDrapeau(int ligne, int colonne) {
         switch (etats[ligne][colonne]) {
             case CACHEE -> etats[ligne][colonne] = Etat.DRAPEAU;
@@ -180,6 +205,7 @@ public class Grille {
     }
 
     /** Gagnee quand toutes les cases sans mine sont decouvertes. */
+    //@ecrire D.6
     public boolean estGagnee() {
         if (perdue) {
             return false;
@@ -195,6 +221,7 @@ public class Grille {
         return decouvertes == casesSaines;
     }
 
+    //@ecrire D.6
     public boolean estTerminee() {
         return perdue || estGagnee();
     }

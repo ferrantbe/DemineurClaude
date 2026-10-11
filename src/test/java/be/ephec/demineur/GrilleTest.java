@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * G.22 — CORRIGE : la preuve que le modele se teste entierement.
+ * FOURNIE : la preuve que les regles du jeu se testent sans fenetre.
  *
  * Aucun de ces tests n'ouvre de fenetre. C'est tout l'interet d'avoir
  * separe Grille de VueDemineur : les regles du jeu se verifient en une
@@ -150,5 +150,16 @@ class GrilleTest {
         grille.decouvrir(1, 1);
 
         assertEquals(Grille.Etat.CACHEE, grille.etatDe(1, 1));
+    }
+
+    @Test
+    @DisplayName("Une grille impossible est refusee des sa construction")
+    void grilleImpossible() {
+        assertThrows(IllegalArgumentException.class, () -> new Grille(0, 3),
+                "une grille sans ligne n'existe pas");
+        assertThrows(IllegalArgumentException.class, () -> new Grille(3, 3, 9),
+                "neuf mines sur neuf cases : aucune case saine");
+        assertThrows(IllegalArgumentException.class, () -> new Grille(3, 3, -1));
+        assertDoesNotThrow(() -> new Grille(3, 3, 8), "huit mines laissent une case saine");
     }
 }

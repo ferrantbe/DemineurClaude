@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------
+#  Ce que Git ne doit pas suivre : ce qui se refabrique.
+# ---------------------------------------------------------------
+
+# --- la compilation Maven
+target/
+*.class
+
+# --- le projet de l'etudiant, genere par _outils/depot_demineur.py
+depot/
+
+# --- les restes des outils, de Word et des systemes
+__pycache__/
+*.pyc
+*.docx.avant
+~$*
+.~lock.*
+.DS_Store
+Thumbs.db
+
+# --- les fichiers de module IntelliJ
+*.iml
