@@ -120,7 +120,7 @@ def fabriquer():
 
     for nom in ["pom.xml", ".gitignore"]:
         shutil.copy(RACINE / nom, DEPOT / nom)
-    shutil.copy(RACINE / "_outils" / "README_etudiant.md", DEPOT / "README.md")
+    shutil.copy(RACINE / "README_publiable.md", DEPOT / "README.md")
 
     principal = DEPOT / "src/main/java" / PAQUET
     principal.mkdir(parents=True)
