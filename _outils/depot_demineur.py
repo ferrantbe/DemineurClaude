@@ -42,6 +42,14 @@ DEPOT = RACINE / "depot" / "Demineur"
 MARQUEUR = re.compile(r"^(\s*)//@ecrire\s+(.+?)\s*$")
 SIGNATURE = re.compile(r"^\s*public\s+[^=;]*\(.*\)\s*\{\s*$")
 
+# Le .gitignore de l'etudiant ne mentionne pas les outils du professeur.
+GITIGNORE_ETUDIANT = """target/
+*.class
+*.iml
+.DS_Store
+Thumbs.db
+"""
+
 EN_TETE_CORRIGE = re.compile(
     r" \* Le MODELE du demineur\. CORRIGE\.\n \*\n(?: \*[^\n]*\n)*? \*\n")
 EN_TETE_SQUELETTE = (
@@ -118,8 +126,8 @@ def fabriquer():
         shutil.rmtree(DEPOT.parent)
     DEPOT.mkdir(parents=True)
 
-    for nom in ["pom.xml", ".gitignore"]:
-        shutil.copy(RACINE / nom, DEPOT / nom)
+    shutil.copy(RACINE / "pom.xml", DEPOT / "pom.xml")
+    (DEPOT / ".gitignore").write_text(GITIGNORE_ETUDIANT, encoding="utf-8")
     shutil.copy(RACINE / "README_publiable.md", DEPOT / "README.md")
 
     principal = DEPOT / "src/main/java" / PAQUET
@@ -135,12 +143,14 @@ def fabriquer():
     for source in (RACINE / "src/test/java" / PAQUET).glob("*.java"):
         shutil.copy(source, tests / source.name)
 
-    enonce = RACINE / "_documents" / "Demineur_enonce.docx"
+    # L'enonce en PDF, jamais le Word : le PDF est exporte depuis le .docx
+    # (LibreOffice dans build_all.sh, ou Word a la main).
+    enonce = RACINE / "_documents" / "Demineur_enonce.pdf"
     if enonce.exists():
         shutil.copy(enonce, DEPOT / enonce.name)
     else:
-        print("   attention : _documents/Demineur_enonce.docx absent, "
-              "lancez d'abord node _outils/build_demineur.js")
+        print("   attention : _documents/Demineur_enonce.pdf absent, "
+              "exportez-le depuis le .docx (ou sh _outils/build_all.sh)")
 
     archive = DEPOT.parent / "Demineur.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:

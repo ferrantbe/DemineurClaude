@@ -8,19 +8,33 @@ le **corrigé**, et le projet que reçoit l'étudiant en est dérivé.
 | Dossier | Contenu |
 |---|---|
 | `src/` | le corrigé ; les méthodes que l'étudiant écrit sont précédées d'un marqueur `//@ecrire D.n` |
-| `_outils/` | le générateur de l'énoncé, celui du projet étudiant, et leurs utilitaires |
-| `_documents/` | `Demineur_enonce.docx`, l'énoncé en sept étapes |
+| `_outils/` | les générateurs de l'énoncé et du corrigé, celui du projet étudiant, et leurs utilitaires |
+| `_documents/` | `Demineur_enonce.docx`, l'énoncé en sept étapes ; `Demineur_corrige.docx`, le corrigé publié à part |
+| `_documents/schemas/` | les illustrations : `schemas.py` dessine les schémas en SVG et les rend en PNG (cairosvg) ; `capture_partie.png` est une capture d'écran du jeu, prise à la main |
 | `depot/` | le projet étudiant généré, et son zip ; ignoré par Git |
 
 ## Pour régénérer
 
+`sh _outils/build_all.sh` enchaîne tout (schémas, deux documents, pagination,
+typographie, PDF si LibreOffice est installé, projet étudiant). Étape par étape :
+
 ```
+python3 _documents/schemas/schemas.py           les schémas (SVG + PNG)
 node _outils/build_demineur.js                  l'énoncé
-python3 _outils/ajouter_pagination.py _documents/Demineur_enonce.docx "Demineur" <pages>
-python3 _outils/typographie.py _documents/Demineur_enonce.docx
+node _outils/build_corrige.js                   le corrigé
+python3 _outils/ajouter_pagination.py _documents/Demineur_enonce.docx "Démineur" <pages>
+python3 _outils/ajouter_pagination.py _documents/Demineur_corrige.docx "Démineur - corrigé" <pages>
+python3 _outils/typographie.py _documents/*.docx
 python3 _outils/depot_demineur.py --verifier    contrôle le squelette
 python3 _outils/depot_demineur.py               fabrique depot/Demineur/ et depot/Demineur.zip
 ```
+
+Sur Moodle, l'énoncé et le corrigé sont déposés en PDF (export depuis Word),
+à côté de `Demineur.zip`. Le zip contient l'énoncé en PDF (pas le `.docx`,
+ni le corrigé) : exporter le PDF avant de lancer `depot_demineur.py`.
+
+Le corrigé recopie le code des cinq méthodes de `Grille` : si le corrigé
+de `src/` change, `build_corrige.js` doit suivre, comme l'énoncé.
 
 Le projet étudiant reçoit `Grille` avec le corps des méthodes marquées
 remplacé par une exception qui nomme l'étape, et tout le reste tel quel : la
@@ -129,6 +143,16 @@ même endroit.
 C'est une leçon qui dépasse ce jeu, et qui vaut d'être dite en classe : une
 interface qui n'offre qu'une seule façon de faire quelque chose exclut ceux dont
 le matériel ne la permet pas. En ajouter une seconde coûte trois lignes.
+
+## Publié avant le module FX
+
+Le démineur est donné en auto-apprentissage, et il arrive avant le module
+FX. Ni l'énoncé, ni le corrigé, ni les commentaires du code ne s'appuient
+donc sur ce module : pas de renvoi aux exercices FX, au deck FX2 ou à la
+calculatrice. L'étudiant n'écrit que `Grille`, qui n'a rien de JavaFX ; le
+lancement est expliqué sommairement dans l'énoncé (D.7) et plus longuement
+dans `LanceurDemineur`. Seul le renvoi au mémento technique (TEC-FX.4)
+subsiste, comme lecture complémentaire.
 
 ## Un reste à surveiller
 

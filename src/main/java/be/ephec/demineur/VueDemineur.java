@@ -17,8 +17,8 @@ import javafx.stage.Stage;
  * ne compte aucune mine, ne decide d'aucune victoire : elle traduit un
  * clic en appel au modele, puis redessine.
  *
- * C'est le meme partage qu'en FX.9, la calculatrice, et pour la meme raison : le modele
- * reste testable, la vue reste jetable.
+ * C'est le partage habituel entre modele et vue, et il a une raison : le
+ * modele reste testable, la vue reste jetable.
  */
 public class VueDemineur {
 
@@ -111,7 +111,7 @@ public class VueDemineur {
      * Ce clic pose-t-il un drapeau ?
      *
      * TROIS GESTES PLUTOT QU'UN, et ce n'est pas du luxe. Le clic droit
-     * est la manière naturelle, mais il n'est pas toujours disponible :
+     * est la maniere naturelle, mais il n'est pas toujours disponible :
      * sur le pave tactile d'un portable Apple, il demande un reglage ou
      * un appui a deux doigts que tout le monde n'a pas active.
      *

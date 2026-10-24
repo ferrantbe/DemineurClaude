@@ -2,7 +2,7 @@ const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
   Table, TableRow, TableCell, WidthType, ShadingType, BorderStyle,
-  PageBreak, LevelFormat, convertInchesToTwip
+  PageBreak, LevelFormat, convertInchesToTwip, ImageRun
 } = require("docx");
 
 const MONO = "Consolas";
@@ -211,8 +211,26 @@ function doc(children, titre) {
 }
 
 
+// Une image PNG centree, a la largeur demandee (en pixels a 96 dpi, la
+// largeur du texte fait environ 600). La hauteur suit les proportions du
+// fichier, lues dans son en-tete. Une legende facultative, en gris, dessous.
+function image(chemin, largeur, legende) {
+  const data = fs.readFileSync(chemin);
+  const w = data.readUInt32BE(16), h = data.readUInt32BE(20);
+  const out = [new Paragraph({
+    alignment: AlignmentType.CENTER, spacing: { before: 120, after: legende ? 40 : 160 },
+    keepNext: !!legende,
+    children: [new ImageRun({ type: "png", data, transformation: { width: largeur, height: Math.round(largeur * h / w) } })]
+  })];
+  if (legende) out.push(new Paragraph({
+    alignment: AlignmentType.CENTER, spacing: { after: 160 },
+    children: [new TextRun({ text: legende, size: 18, color: GREY, italics: true })]
+  }));
+  return out;
+}
+
 module.exports = {
-  p, runs, bullet, bulletRuns, code, h1, h2, cell, tableau,
+  p, runs, bullet, bulletRuns, code, h1, h2, cell, tableau, image,
   encadre, verif, saut, couverture, modeEmploi, doc,
   Packer, MONO, ACCENT, GREY, W, AlignmentType, Paragraph, TextRun, PageBreak
 };

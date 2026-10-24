@@ -31,10 +31,10 @@ import javafx.application.Application;
  *     chemin depend de la machine : la configuration n'est plus
  *     transportable d'un poste a l'autre.
  *
- *   - Declarer un module-info.java. C'est la solution propre, celle qu'on
- *     emploie dans les projets JavaFX du cours, mais elle impose que
- *     toutes les dependances soient modulaires et elle complique le
- *     demarrage. Hors sujet pour un projet de trois classes.
+ *   - Declarer un module-info.java, pour que JavaFX soit charge comme
+ *     module. C'est la solution complete, mais elle impose que toutes
+ *     les dependances soient modulaires et elle complique le demarrage.
+ *     Hors de proportion pour un projet de quatre classes.
  */
 public class LanceurDemineur {
 

@@ -11,10 +11,11 @@
 const fs = require("fs");
 const B = require(__dirname + "/boite.js");
 const {
-  p, runs, bullet, bulletRuns, code, h1, h2, tableau, encadre,
+  p, runs, image, bullet, bulletRuns, code, h1, h2, tableau, encadre,
   saut, doc, Packer, GREY, ACCENT, AlignmentType, Paragraph, TextRun
 } = B;
 
+const SCHEMAS = __dirname + "/../_documents/schemas/";
 const d = [];
 
 function etape(codeEx, titre) {
@@ -56,7 +57,11 @@ d.push(h1("Ce projet"));
 d.push(p("Un démineur jouable, dans une fenêtre JavaFX. Vous n'en écrivez qu'une classe : Grille, qui contient toutes les règles du jeu. La fenêtre, l'application et son lanceur vous sont fournis, ainsi que onze tests JUnit."));
 d.push(runs([
   { t: "C'est un travail en bonus. ", b: true },
-  "Il n'y a rien à remettre et rien n'est évalué. Faites-le à votre rythme, après le thème FX, si vous voulez voir une application complète se construire autour d'un modèle que vous avez écrit et testé."
+  "Il n'y a rien à remettre et rien n'est évalué. Faites-le seul, à votre rythme, si vous voulez voir une application complète se construire autour d'un modèle que vous avez écrit et testé."
+]));
+d.push(runs([
+  { t: "Un corrigé est publié avec cet énoncé, dans un document séparé. ", b: true },
+  "Il donne une façon d'écrire chaque méthode, et répond aux questions posées en cours de route. Ne l'ouvrez qu'une fois les tests d'une étape au vert, pour comparer, ou si une étape vous résiste depuis un moment : c'est en cherchant que l'on apprend, pas en lisant la réponse."
 ]));
 d.push(h2("Ce que vous recevez"));
 d.push(tableau(["Classe", "Rôle", "À vous ?"], [
@@ -69,11 +74,11 @@ d.push(tableau(["Classe", "Rôle", "À vous ?"], [
 d.push(h2("La règle qui compte"));
 d.push(runs([
   { t: "Grille n'importe rien de JavaFX. ", b: true },
-  "C'est ce qui la rend testable en une seconde, sans ouvrir de fenêtre, et c'est la séparation entre modèle et vue du deck FX2 : la vue demande, le modèle décide. Si vous vous surprenez à écrire « import javafx » dans Grille, arrêtez-vous : la question appartient à la vue."
+  "C'est ce qui la rend testable en une seconde, sans ouvrir de fenêtre, et c'est la séparation entre modèle et vue : la vue demande, le modèle décide. Si vous vous surprenez à écrire « import javafx » dans Grille, arrêtez-vous : la question appartient à la vue."
 ]));
 d.push(h2("Comment travailler"));
 d.push(bullet("Ouvrez le projet dans IntelliJ comme un projet Maven : JavaFX et JUnit sont déclarés dans le pom.xml, rien à installer."));
-d.push(bullet("Les méthodes à écrire lèvent UnsupportedOperationException, avec l'étape qui les attend. Écrivez-les dans l'ordre des étapes."));
+d.push(bullet("Comme dans les fascicules, les méthodes à écrire lèvent UnsupportedOperationException ; le message dit l'étape qui les attend. Écrivez-les dans l'ordre des étapes."));
 d.push(bullet("Lancez GrilleTest après chaque étape. L'énoncé dit quels tests doivent passer au vert : les autres peuvent encore échouer, c'est normal."));
 d.push(bullet("Ne lancez le jeu qu'à la fin : la fenêtre appelle presque toutes les méthodes de Grille dès son ouverture."));
 
@@ -83,8 +88,9 @@ d.push(p("Une grille de cases cachées, dont certaines cachent une mine. Découv
 d.push(p("Une case sans mine voisine ne dit rien d'utile : le jeu découvre alors ses voisines à votre place, et ainsi de suite. C'est ce qui ouvre d'un seul clic de grandes zones vides."));
 d.push(p("Le joueur peut aussi marquer une case. Le premier marquage pose un drapeau, « il y a une mine ici » ; le second un point d'interrogation, « peut-être » ; le troisième efface la marque. Seul le drapeau protège la case d'un clic malheureux : un doute est une note, pas une décision."));
 
+d.push(...image(SCHEMAS + "capture_partie.png", 200, "Une partie en cours : les chiffres comptent les mines voisines, les astérisques sont des drapeaux."));
+
 // --- les etapes -----------------------------------------------------
-d.push(saut());
 d.push(h1("Les étapes"));
 
 etape("D.1", "Lire ce qui est fourni");
@@ -113,6 +119,7 @@ d.push(runs([
   "Deux boucles imbriquées, de -1 à 1, donnent les neuf décalages autour de la case. Il en reste huit une fois qu'on a écarté le décalage nul, et ", { t: "dansLaGrille", code: true },
   " écarte ceux qui sortent de la grille."
 ]));
+d.push(...image(SCHEMAS + "voisines.png", 400));
 d.push(auVert(["minesVoisines"]));
 
 etape("D.3", "Découvrir une case");
@@ -135,6 +142,7 @@ d.push(runs([
   "Elle tient en quelques lignes : la méthode appelle ", { t: "decouvrir", code: true },
   " sur chaque voisine. Ce que vous avez écrit à l'étape D.3 suffit à arrêter la récursion."
 ]));
+d.push(...image(SCHEMAS + "propagation.png", 440));
 d.push(auVert(["propagation"]));
 d.push(h2("Questions à se poser"));
 d.push(bullet("Pourquoi la récursion s'arrête-t-elle ? Quelle ligne de l'étape D.3 l'empêche de tourner en rond entre deux cases vides voisines ?"));
@@ -170,7 +178,15 @@ d.push(p("Les onze tests doivent maintenant passer."));
 etape("D.7", "Jouer");
 d.push(runs([
   "Lancez ", { t: "LanceurDemineur", code: true }, ", et non ", { t: "Demineur", code: true },
-  " : une classe qui hérite d'Application refuse de démarrer quand Maven fournit JavaFX. La raison est dans le mémento technique, TEC-FX.4."
+  ". Lancée directement, ", { t: "Demineur", code: true },
+  " refuse de démarrer : elle hérite d'une classe de JavaFX, et le lanceur de Java exige alors que JavaFX soit chargé d'une manière que Maven ne prévoit pas. ",
+  { t: "LanceurDemineur", code: true },
+  " n'hérite de rien et se contente de démarrer ", { t: "Demineur", code: true },
+  " : le contrôle ne se déclenche pas. Son commentaire en dit plus, et le mémento technique y revient en TEC-FX.4."
+]));
+d.push(runs([
+  "Si le lancement résiste malgré tout, passez par la fenêtre Maven d'IntelliJ : ",
+  { t: "Plugins", code: true }, ", puis ", { t: "javafx", code: true }, ", puis ", { t: "javafx:run", code: true }, "."
 ]));
 d.push(bullet("un clic découvre une case ; un clic droit, Maj+clic ou Ctrl+clic la marque ;"));
 d.push(bullet("un clic sur une zone vide en ouvre toute l'étendue d'un coup ;"));

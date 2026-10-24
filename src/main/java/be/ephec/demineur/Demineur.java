@@ -16,10 +16,10 @@ import javafx.stage.Stage;
  *
  * Ici, rien de tout cela. La classe herite d'Application, la methode
  * launch() demarre le moteur, et start() recoit une fenetre toute prete.
- * C'est la forme que prend TOUTE application JavaFX — celle des exercices
- * FX, et celle de la question 5 de l'examen.
+ * C'est la forme que prend TOUTE application JavaFX, et vous la
+ * retrouverez telle quelle dans le module FX.
  *
- * CE QU'IL FAUT EN RETENIR. Quand le code devient compliqué pour tenir
+ * CE QU'IL FAUT EN RETENIR. Quand le code devient complique pour tenir
  * dans une structure, c'est souvent la structure qu'il faut changer.
  *
  * POUR LANCER LE PROGRAMME, executez LanceurDemineur, pas cette classe.

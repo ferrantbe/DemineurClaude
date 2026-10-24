@@ -158,7 +158,8 @@ public class Grille {
         // Le DOUTE ne protege pas : c'est une note qu'on se laisse, pas
         // une decision. Le DRAPEAU, lui, bloque — c'est son interet, et
         // c'est la regle du demineur d'origine.
-        if (etats[ligne][colonne] != Etat.CACHEE && etats[ligne][colonne] != Etat.DOUTE) {
+        if (etats[ligne][colonne] != Etat.CACHEE
+                && etats[ligne][colonne] != Etat.DOUTE) {
             return;
         }
 
